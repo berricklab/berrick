@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Students List</h1>
+
+    <form id="studentForm">
+        <input type="text" id="name" placeholder="Student Name">
+        <input type="text" id="className" placeholder="Class">
+        <button type="submit">Add Student</button>
+    </form>
+
+    <ul id="studentList"></ul>
+
+</div>
+
+<script>
+const form = document.getElementById('studentForm');
+const studentList = document.getElementById('studentList');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const student = {
+        name: document.getElementById('name').value,
+        className: document.getElementById('className').value
+    };
+
+    await fetch('http://localhost:5000/api/students', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(student)
+    });
+
+    loadStudents();
+});
+
+async function loadStudents() {
+    const res = await fetch('http://localhost:5000/api/students');
+    const data = await res.json();
+
+    studentList.innerHTML = data.map(student => `
+        <li>${student.name} - ${student.className}</li>
+    `).join('');
+}
+
+loadStudents();
+</script>
+
+</body>
+</html>
